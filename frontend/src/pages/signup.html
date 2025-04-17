@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Student Registration</title>
+    <link rel="stylesheet" href="/styles/style.css">
+    <link rel="icon" type="image/x-icon" href="/images/book-logo.ico">
+</head>
+
+<body>
+    <nav class="navbar">
+        <ul>
+            <li>
+                <a href="/">Home</a>
+            </li>
+            <li>
+                <a href="/index.html">Login</a>
+            </li>
+        </ul>
+    </nav>
+
+    <div class="register-sec">
+        <h1>BookVerse Registration</h1>
+        <center>
+            <table cellspacing="15">
+                <form id="signupForm">
+                    <tr>
+                        <div class="fname">
+                            <td><label for="firstName">Username:</label></td>
+                            <td><input type="text" name="username" id="username" required></td>
+                        </div>
+                    </tr>
+                    <tr>
+                        <div class="pass">
+                            <td><label for="password">Password: </label></td>
+                            <td><input type="password" name="password" id="password" required></td>
+                        </div>
+                    </tr>
+                    <tr>
+                        <div class="mob">
+                            <td><label for="mobNo">Mobile Number:</label></td>
+                            <td><input type="tel" name="mobile" id="mobile" required></td>
+                        </div>
+                    </tr>
+                    <tr>
+                        <div class="email">
+                            <td><label for="email">E-mail:</label></td>
+                            <td><input type="email" name="email" id="email" required></td>
+                        </div>
+                    </tr>
+                    <tr>
+                        <div class="submit">
+                            <td colspan="2">
+                                <button type="submit">Register</button>
+                            </td>
+                        </div>
+                    </tr>
+                </form>
+            </table>
+        </center>
+    </div>
+
+    <!-- Add JavaScript to handle form submission -->
+    <script>
+        document.getElementById('signupForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const formData = {
+                username: document.getElementById('username').value,
+                password: document.getElementById('password').value,
+                mobile: document.getElementById('mobile').value,
+                email: document.getElementById('email').value
+            };
+
+            try {
+                const response = await fetch('/api/auth/signup', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    // Registration successful
+                    alert('Registration successful!');
+                    // Redirect to home page after successful registration
+                    window.location.href = '/pages/home.html';
+                } else {
+                    // Registration failed
+                    alert(data.message || 'Registration failed');
+                }
+
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred during registration');
+            }
+        });
+    </script>
+</body>
+
+</html>

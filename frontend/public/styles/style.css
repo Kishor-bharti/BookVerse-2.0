@@ -1,0 +1,131 @@
+@import url('https://fonts.googleapis.com/css2?family=Cabin&family=Caveat:wght@500&family=Comfortaa:wght@300&family=IBM+Plex+Sans&family=Oswald:wght@200&family=Poppins:wght@300&display=swap');
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    border: 0;
+    font-family: 'poppins', sans-serif;
+    color: white;
+
+    /* display: flex; */
+
+}
+
+body {
+    width: 100%;
+    min-height: 100vh;
+    background: url('/images/spiral.jpg')no-repeat;
+    background-position: center;
+    background-size: cover;
+}
+
+.form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 800px;
+    width: 800px;
+
+}
+
+.form1 {
+
+    display: flex;
+    margin: 40px;
+    padding: 30px;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: baseline;
+    height: 800px;
+    width: 800px;
+}
+
+.navbar {
+    position: sticky;
+    top: 0;
+    background-color: rgba(23, 21, 28, 0.443);
+    padding: 5px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: flex-end;
+}
+
+a {
+    text-decoration: none;
+}
+
+li {
+    border: 2px solid rgba(225, 242, 248, 0.636);
+    display: inline-block;
+    padding: 5px 20px;
+}
+
+li a:hover {
+    transition: all 0.3s ease 0;
+    color: rgb(200, 193, 155);
+
+}
+
+ul {
+
+    list-style: none;
+}
+
+input[type=submit] {
+    background-color: rgb(54, 49, 56);
+
+}
+
+h1 {
+    text-align: center;
+    position: sticky;
+    top: 0;
+}
+
+input {
+    background-color: rgba(30, 108, 112, 0.393);
+    color: rgb(255, 255, 255);
+    width: 200px;
+    min-height: 30px;
+    margin: 10px;
+    border: 2px solid rgb(181, 174, 146);
+    padding: 5px;
+}
+
+.address input {
+    background-color: rgba(30, 108, 112, 0.393);
+    border: 2px solid rgb(181, 174, 146);
+    color: rgb(255, 255, 255);
+    width: 400px;
+    min-height: 50px;
+}
+
+.gender input {
+    width: 20px;
+    min-height: 15px;
+}
+
+.program-list select {
+    background-color: rgba(30, 108, 112, 0.393);
+    border: 2px solid rgb(181, 174, 146);
+}
+
+button[type=submit] {
+    background-color: rgba(30, 108, 112, 0.393);
+    border: 2px solid rgb(181, 174, 146);
+    color: white;
+    height: 30px;
+    width: 100px;
+
+}
+
+button[type=submit]:hover {
+    background-color: rgba(120, 204, 209, 0.635);
+    border: 2px solid rgb(209, 204, 184);
+    color: white;
+    height: 33px;
+    width: 103px;
+
+}

@@ -1,0 +1,129 @@
+@import url('https://fonts.googleapis.com/css2?family=Cabin&family=Caveat:wght@500&family=Comfortaa:wght@300&family=IBM+Plex+Sans&family=Oswald:wght@200&family=Poppins:wght@300&display=swap');
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    border: 0;
+    /* display: flex; */
+
+}
+
+body {
+    width: 100%;
+    min-height: 100vh;
+    background: url('/images/fog.jpg')no-repeat;
+    background-position: center;
+    background-size: cover;
+
+}
+
+
+
+
+.nav {
+    /* border: 2px solid black; */
+    /* background-color: #515ada; */
+    position: sticky;
+    top: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    /* align-items: flex-end; */
+    padding: 15px 5%;
+    /*top and bottom*/
+
+    /*   align-content: space-between; */
+    text-decoration: none;
+    /* border: 2px solid rgba(207, 195, 195, 0.584); */
+    /* backdrop-filter: blur(15px); */
+    background-color: rgba(86, 128, 157, 0.185);
+
+    /* position: sticky; */
+}
+
+header p {
+    position: absolute;
+    font-size: 22px;
+    top: 11px;
+    left: 15px;
+    font-family: 'Poppins', sans-serif;
+}
+
+.links li {
+    display: inline-block;
+    padding: 0px 20px;
+}
+
+.links li a {
+    font-family: 'Oswald', sans-serif;
+    color: black;
+    transition: all 0.3s ease 0;
+    text-decoration: none;
+    /* border: 2px solid yellow; */
+}
+
+.links li a:hover {
+    transition: all 0.3s ease 0;
+    color: white;
+}
+
+
+.form-center h1 {
+    font-family: 'IBM Plex Sans', sans-serif;
+    color: rgba(3, 29, 53, 0.522);
+    font-size: 60px;
+    font-weight: 500;
+    /* margin: 10%;
+  padding: 5%; */
+}
+
+.form-center form {
+    /* border: 2px solid #6a3535; */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 80vh;
+    /*using this view hight to adjust the login*/
+
+    /* flex-direction: column; */
+    /* align-items: center; */
+    /* justify-content: center; */
+    /* min-height: 80vh; */
+    /* margin: 7%; */
+    /* padding: 15% */
+}
+
+input[type=text],
+[type=password] {
+    padding: 15px;
+    margin: 10px 0;
+    /* top, bottom margin */
+    border: 2px solid rgb(12, 43, 61);
+    background-color: rgb(231, 238, 246);
+    border-bottom: 3px solid #6a3535;
+    border-right: 3px solid #6a3535;
+    box-shadow: 0 0 15px 4px rgba(222, 216, 228, 0.926);
+    border-radius: 3px;
+    width: 20%;
+}
+
+button[type=submit] {
+    font-family: 'Comfortaa', cursive;
+    font-weight: bold;
+    /* font-size: 20px; */
+    color: white;
+    padding: 5px;
+    margin: 5px 0;
+    border-radius: 10px;
+    background-color: #d2e0e090;
+    width: 70px;
+    height: 40px;
+    border: 3px solid #e3dddd;
+    box-shadow: 0 0 10px 4px rgba(230, 227, 232, 0.707);
+}
+
+button[type=submit]:hover {
+    color: rgb(40, 71, 94);
+    background-color: #c7dfeed0;
+}
