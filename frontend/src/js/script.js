@@ -9,48 +9,60 @@ function setupSearchAndMenu() {
     let navbar = document.querySelector('.navbar');
     let header = document.querySelector('header');
 
-    document.querySelector('#search-icon').onclick = () => {
-        search.classList.toggle('active');
-        navbar.classList.remove('active');
-    };
+    if (document.querySelector('#search-icon')) {
+        document.querySelector('#search-icon').onclick = () => {
+            search.classList.toggle('active');
+            navbar.classList.remove('active');
+        };
+    }
 
-    document.querySelector('#menu-icon').onclick = () => {
-        navbar.classList.toggle('active');
-        search.classList.remove('active');
-    };
+    if (document.querySelector('#menu-icon')) {
+        document.querySelector('#menu-icon').onclick = () => {
+            navbar.classList.toggle('active');
+            search.classList.remove('active');
+        };
+    }
 
     window.onscroll = () => {
-        navbar.classList.remove('active');
-        search.classList.remove('active');
-        header.classList.toggle('shadow', window.scrollY > 0);
+        if (navbar && search) {
+            navbar.classList.remove('active');
+            search.classList.remove('active');
+        }
+        if (header) {
+            header.classList.toggle('shadow', window.scrollY > 0);
+        }
     };
 }
 
 async function checkLoginStatus() {
-    const response = await fetch('/api/auth/status');
-    const data = await response.json();
-    updateNavbar(data.isLoggedIn);
+    try {
+        const response = await fetch('/api/auth/status');
+        const data = await response.json();
+        updateNavbar(data.isLoggedIn);
+    } catch (error) {
+        console.error('Error checking login status:', error);
+    }
 }
 
 function updateNavbar(isLoggedIn) {
     const navbar = document.getElementById('navbar');
+    if (!navbar) return;
     const links = isLoggedIn
-        ? ['Home', 'About', 'Books', 'Cart', 'Upload', 'Logout']
-        : ['Home', 'About', 'Books', 'Register'];
+        ? ['Home', 'Cart', 'Upload', 'Logout']
+        : ['Home', 'Login', 'Register'];
     
     navbar.innerHTML = links.map(link => 
-        `<a href="#" onclick="loadPage('${link.toLowerCase()}')">${link}</a>`
+        `<a href="${link.toLowerCase()}.html" onclick="loadPage('${link.toLowerCase()}')">${link}</a>`
     ).join('');
 }
 
 async function loadPage(page) {
     const content = document.getElementById('page-content');
+    if (!content) return;
     
     try {
         switch(page) {
             case 'home':
-            case 'about':
-            case 'books':
             case 'register':
             case 'login':
             case 'cart':
@@ -64,7 +76,7 @@ async function loadPage(page) {
             case 'logout':
                 await fetch('/api/auth/logout', { method: 'POST' });
                 checkLoginStatus();
-                loadPage('login');
+                loadPage('home');
                 break;
             default:
                 content.innerHTML = '<h2>Page Not Found</h2><p>Sorry, this page does not exist.</p>';
@@ -80,21 +92,28 @@ function setupRegisterForm() {
     if (form) {
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
-            const email = document.getElementById('email').value;
+            const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
+            const mobile = document.getElementById('mobile').value;
+            const email = document.getElementById('email').value;
             
-            const response = await fetch('/api/auth/signup', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, password })
-            });
-            
-            if (response.ok) {
-                alert('Registration successful! Please login.');
-                loadPage('login');
-            } else {
-                const error = await response.text();
-                alert(`Registration failed: ${error}`);
+            try {
+                const response = await fetch('/api/auth/signup', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password, mobile, email })
+                });
+                
+                const data = await response.json();
+                if (response.ok) {
+                    alert('Registration successful! Please login.');
+                    loadPage('login');
+                } else {
+                    alert(`Registration failed: ${data.message}`);
+                }
+            } catch (error) {
+                console.error('Registration error:', error);
+                alert('Registration failed: An error occurred');
             }
         });
     }
@@ -105,20 +124,26 @@ function setupLoginForm() {
     if (form) {
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
-            const email = document.getElementById('email').value;
+            const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
             
-            const response = await fetch('/api/auth/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, password })
-            });
-            
-            if (response.ok) {
-                checkLoginStatus();
-                loadPage('home');
-            } else {
-                alert('Login failed');
+            try {
+                const response = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+                
+                const data = await response.json();
+                if (response.ok) {
+                    checkLoginStatus();
+                    loadPage('home');
+                } else {
+                    alert(`Login failed: ${data.message}`);
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                alert('Login failed: An error occurred');
             }
         });
     }

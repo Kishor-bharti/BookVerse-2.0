@@ -19,26 +19,26 @@
         </ul>
     </nav>
 
-    <div class="register-sec">
+    <section class="register-sec">
         <h1>BookVerse Registration</h1>
         <center>
             <table cellspacing="15">
                 <form id="register-form">
                     <tr>
                         <div class="fname">
-                            <td><label for="firstName">Username:</label></td>
+                            <td><label for="username">Username:</label></td>
                             <td><input type="text" name="username" id="username" required></td>
                         </div>
                     </tr>
                     <tr>
                         <div class="pass">
-                            <td><label for="password">Password: </label></td>
+                            <td><label for="password">Password:</label></td>
                             <td><input type="password" name="password" id="password" required></td>
                         </div>
                     </tr>
                     <tr>
                         <div class="mob">
-                            <td><label for="mobNo">Mobile Number:</label></td>
+                            <td><label for="mobile">Mobile Number:</label></td>
                             <td><input type="tel" name="mobile" id="mobile" required></td>
                         </div>
                     </tr>
@@ -58,10 +58,10 @@
                 </form>
             </table>
         </center>
-    </div>
+    </section>
 
     <!-- Add JavaScript to handle form submission -->
-    <script>
+    <!-- <script>
         document.getElementById('register-form').addEventListener('submit', async (e) => {
             e.preventDefault();
 
@@ -98,7 +98,7 @@
                 alert('An error occurred during registration');
             }
         });
-    </script>
+    </script> -->
 </body>
 
 </html>
