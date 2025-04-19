@@ -2,8 +2,6 @@
 <html>
 <head>
     <title>Login</title>
-    <!-- Update paths to start from public directory since it's served as static -->
-    <!-- <link rel="stylesheet" href="/frontend/public/styles/login.css"> -->
     <link rel="stylesheet" href="/styles/login.css">
     <link rel="icon" type="image/x-icon" href="/images/book-logo.ico">
 </head>
@@ -37,8 +35,7 @@
         </form>
     </section>
 
-    <!-- Add JavaScript to handle form submission -->
-    <!-- <script>
+    <script>
         document.getElementById('login-form').addEventListener('submit', async (e) => {
             e.preventDefault();
             
@@ -59,7 +56,6 @@
                 if (response.ok) {
                     // Login successful
                     alert('Login successful!');
-                    // Redirect to dashboard or home page
                     window.location.href = '/pages/home.html';
                 } else {
                     // Login failed
@@ -70,6 +66,6 @@
                 alert('An error occurred during login');
             }
         });
-    </script> -->
+    </script>
 </body>
 </html>

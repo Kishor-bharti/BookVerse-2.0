@@ -8,9 +8,14 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, 'frontend/public')));
 app.use(express.static(path.join(__dirname, 'frontend/src')));
 app.use(session({
-    secret: 'your-secret-key',
+    secret: process.env.SESSION_SECRET || 'your-secret-key',
     resave: false,
-    saveUninitialized: false
+    saveUninitialized: false,
+    cookie: {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        maxAge: 24 * 60 * 60 * 1000 // 1 day
+    }
 }));
 
 // Authentication routes

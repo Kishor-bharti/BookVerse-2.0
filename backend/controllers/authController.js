@@ -19,6 +19,9 @@ const getStatus = (req, res) => {
 const signup = async (req, res) => {
     const { username, password, mobile, email } = req.body;
     try {
+        console.log('Signup request received:', req.body);
+
+        // Check for duplicate username or email
         const [rows] = await db.query('SELECT * FROM users WHERE username = ? OR email = ?', [username, email]);
         if (rows.length > 0) {
             const existingUser = rows[0];
@@ -29,15 +32,20 @@ const signup = async (req, res) => {
                 return res.status(409).json({ message: 'Email already exists' });
             }
         }
+
+        // Hash the password
         const hashedPassword = await bcrypt.hash(password, 10);
+
+        // Insert new user into the database
         await db.query(
             'INSERT INTO users (username, password, mobile, email) VALUES (?, ?, ?, ?)',
             [username, hashedPassword, mobile, email]
         );
-        res.status(201).json({ message: 'User registered' });
+
+        res.status(201).json({ message: 'User registered successfully' });
     } catch (error) {
-        console.error('Registration error:', error);
-        res.status(500).json({ message: 'Server error' });
+        console.error('Error during signup:', error);
+        res.status(500).json({ message: 'Internal server error' });
     }
 };
 
@@ -48,22 +56,30 @@ const login = async (req, res) => {
         if (rows.length === 0) {
             return res.status(401).json({ message: 'Invalid username or password' });
         }
+
         const user = rows[0];
-        if (await bcrypt.compare(password, user.password)) {
-            req.session.user = { id: user.id, username: user.username, email: user.email };
-            res.status(200).json({ message: 'Logged in' });
-        } else {
-            res.status(401).json({ message: 'Invalid username or password' });
+        const isPasswordValid = await bcrypt.compare(password, user.password);
+        if (!isPasswordValid) {
+            return res.status(401).json({ message: 'Invalid username or password' });
         }
+
+        req.session.user = { id: user.id, username: user.username };
+        res.json({ message: 'Login successful' });
     } catch (error) {
-        console.error('Login error:', error);
-        res.status(500).json({ message: 'Server error' });
+        console.error('Error during login:', error);
+        res.status(500).json({ message: 'Internal server error' });
     }
 };
 
 const logout = (req, res) => {
-    req.session.destroy();
-    res.status(200).json({ message: 'Logged out' });
+    req.session.destroy((err) => {
+        if (err) {
+            console.error('Error during logout:', err);
+            return res.status(500).json({ message: 'Failed to log out' });
+        }
+        res.clearCookie('connect.sid');
+        res.json({ message: 'Logout successful' });
+    });
 };
 
 module.exports = { getStatus, signup, login, logout };
