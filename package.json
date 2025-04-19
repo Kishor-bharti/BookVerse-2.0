@@ -1,16 +1,19 @@
 {
   "name": "bookverse",
   "version": "1.0.0",
-  "description": "+ Create a new directory for your project and initialize a new Node.js project by running ```npm init -y```.\r + Install the required dependencies by running ```npm install express mysql```.\r + Create an app.js file and set up the Express.js server.",
-  "main": "index.js",
+  "description": "BookVerse 2.0 - A simple bookstore application",
+  "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+      "start": "node app.js",
+      "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.21.1",
-    "mysql": "^2.18.1"
+      "express": "^4.21.1",
+      "mysql2": "^3.6.0",
+      "express-session": "^1.17.3",
+      "bcrypt": "^5.1.0"
   }
 }

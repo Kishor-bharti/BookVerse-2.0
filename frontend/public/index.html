@@ -1,76 +1,12 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Login</title>
-    <!-- Update paths to start from public directory since it's served as static -->
-    <!-- <link rel="stylesheet" href="/frontend/public/styles/login.css"> -->
-    <link rel="stylesheet" href="/styles/login.css">
-    <link rel="icon" type="image/x-icon" href="/images/book-logo.ico">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome Home</title>
 </head>
-
 <body>
-    <header class="nav">
-        <p class="log">BookVerse</p>
-        <nav class="links">
-            <ul>
-                <li>
-                    <a href="/">Home</a>
-                </li>
-                <li>
-                    <a href="/pages/signup.html">New Student Register</a>
-                </li>
-            </ul>
-        </nav>
-    </header>
-
-    <div class="form-center">
-        <!-- Update form to use the login endpoint -->
-        <form id="loginForm">
-            <label for="firstName">
-                <h1>Login</h1>
-            </label>
-            <br>
-            <input type="text" name="username" id="username" placeholder="Username" required>
-            <br>
-            <input type="password" name="password" id="password" placeholder="Password" required>
-            <br>
-            <button type="submit">Login</button>
-        </form>
-    </div>
-
-    <!-- Add JavaScript to handle form submission -->
-    <script>
-        document.getElementById('loginForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-
-            try {
-                const response = await fetch('/api/auth/login', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ username, password })
-                });
-
-                const data = await response.json();
-
-                if (response.ok) {
-                    // Login successful
-                    alert('Login successful!');
-                    // Redirect to dashboard or home page
-                    window.location.href = '/pages/home.html';
-                } else {
-                    // Login failed
-                    alert(data.message || 'Login failed');
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                alert('An error occurred during login');
-            }
-        });
-    </script>
+    <h2>This is the home page</h2>
+    <a href="/pages/login.html">Click here</a> to go to the login page!
 </body>
 </html>

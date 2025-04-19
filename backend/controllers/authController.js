@@ -1,109 +1,60 @@
-const mysql = require('mysql');
+const mysql = require('mysql2/promise');
+const bcrypt = require('bcrypt');
 
-// MySQL connection details
-const connection = mysql.createConnection({
-  host: 'localhost',
-  user: 'root',
-  password: '7517',
-  database: 'USERS'
-});
+let db;
+async function initDb() {
+    db = await mysql.createConnection({
+        host: 'localhost',
+        user: 'root',
+        password: '7517',
+        database: 'bookstore'
+    });
+}
+initDb();
 
-// Login controller
-exports.login = (req, res) => {
-  const { username, password } = req.body;
-
-  // Query the database for the user
-  connection.query('SELECT * FROM users WHERE username = ?', [username], (err, results) => {
-    if (err) throw err;
-
-    if (results.length > 0) {
-      const user = results[0];
-
-      // Compare the provided password with the stored password
-      if (user.password === password) {
-        // Login successful
-        res.status(200).json({ message: 'Login successful' });
-      } else {
-        // Invalid password
-        res.status(401).json({ message: 'Invalid username or password' });
-      }
-    } else {
-      // User not found
-      res.status(401).json({ message: 'Invalid username or password' });
-    }
-  });
+const getStatus = (req, res) => {
+    res.json({ isLoggedIn: !!req.session.user });
 };
 
-// // Signup controller
-// exports.signup = (req, res) => {
-//   const { username, password } = req.body;
-
-//   // Check if the username already exists
-//   connection.query('SELECT * FROM users WHERE username = ?', [username], (err, results) => {
-//     if (err) throw err;
-
-//     if (results.length > 0) {
-//       // Username already exists
-//       res.status(409).json({ message: 'Username already exists' });
-//     } else {
-//       // Insert the new user into the database
-//       connection.query('INSERT INTO users (username, password) VALUES (?, ?)', [username, password], (err, result) => {
-//         if (err) throw err;
-
-//         // Send a success response
-//         res.status(201).json({ message: 'Sign-up successful' });
-//       });
-//     }
-//   });
-// };
-
-// Signup controller
-exports.signup = (req, res) => {
-  const { username, password, mobile, email } = req.body;
-
-  // Check if the username or email already exists
-  connection.query(
-    'SELECT * FROM users WHERE username = ? OR email = ?',
-    [username, email],
-    (err, results) => {
-      if (err) {
-        console.error('Database error:', err);
-        return res.status(500).json({ message: 'Database error occurred' });
-      }
-
-      if (results.length > 0) {
-        // Check which field already exists
-        const existingUser = results[0];
-        if (existingUser.username === username) {
-          return res.status(409).json({ message: 'Username already exists' });
+const signup = async (req, res) => {
+    const { email, password } = req.body;
+    try {
+        const [rows] = await db.query('SELECT * FROM users WHERE email = ?', [email]);
+        if (rows.length > 0) {
+            return res.status(400).send('User already exists');
         }
-        if (existingUser.email === email) {
-          return res.status(409).json({ message: 'Email already exists' });
-        }
-      }
-
-      // Insert the new user into the database
-      const query = `
-        INSERT INTO users (username, password, mobile, email) 
-        VALUES (?, ?, ?, ?)
-      `;
-
-      connection.query(
-        query,
-        [username, password, mobile, email],
-        (err, result) => {
-          if (err) {
-            console.error('Insert error:', err);
-            return res.status(500).json({ message: 'Error creating user' });
-          }
-
-          // Send a success response
-          res.status(201).json({
-            message: 'Sign-up successful',
-            userId: result.insertId
-          });
-        }
-      );
+        const hashedPassword = await bcrypt.hash(password, 10);
+        await db.query('INSERT INTO users (email, password) VALUES (?, ?)', [email, hashedPassword]);
+        res.status(201).send('User registered');
+    } catch (error) {
+        console.error('Registration error:', error);
+        res.status(500).send('Server error');
     }
-  );
 };
+
+const login = async (req, res) => {
+    const { email, password } = req.body;
+    try {
+        const [rows] = await db.query('SELECT * FROM users WHERE email = ?', [email]);
+        if (rows.length === 0) {
+            return res.status(401).send('User not found');
+        }
+        const user = rows[0];
+        if (await bcrypt.compare(password, user.password)) {
+            req.session.user = { id: user.id, email: user.email };
+            res.status(200).send('Logged in');
+        } else {
+            res.status(401).send('Invalid password');
+        }
+    } catch (error) {
+        console.error('Login error:', error);
+        res.status(500).send('Server error');
+    }
+};
+
+const logout = (req, res) => {
+    req.session.destroy();
+    res.status(200).send('Logged out');
+};
+
+module.exports = { getStatus, signup, login, logout };
