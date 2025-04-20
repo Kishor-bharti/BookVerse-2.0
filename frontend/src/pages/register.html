@@ -85,6 +85,10 @@
                 if (response.ok) {
                     // Registration successful
                     alert('Registration successful!');
+
+                    // Update the navbar dynamically
+                    updateNavbarForLoggedInUser();
+
                     // Redirect to home page after successful registration
                     window.location.href = '/pages/home.html';
                 } else {
@@ -97,6 +101,17 @@
                 alert('An error occurred during registration');
             }
         });
+
+        // Function to update the navbar for logged-in users
+        function updateNavbarForLoggedInUser() {
+            const navbar = document.querySelector('.navbar ul');
+            navbar.innerHTML = `
+                <li><a href="/">Home</a></li>
+                <li><a href="/pages/cart.html">Cart</a></li>
+                <li><a href="/pages/upload.html">Upload</a></li>
+                <li><a href="/api/auth/logout">Logout</a></li>
+            `;
+        }
     </script>
 </body>
 

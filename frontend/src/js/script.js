@@ -2,6 +2,41 @@ document.addEventListener('DOMContentLoaded', () => {
     checkLoginStatus();
     setupNavLinks();
     setupSearchAndMenu();
+
+    // Add event listener for the logout button
+    const logoutButton = document.querySelector('#logout-button');
+    if (logoutButton) {
+        logoutButton.addEventListener('click', async (e) => {
+            e.preventDefault();
+            try {
+                const response = await fetch('/api/auth/logout', {
+                    method: 'POST',
+                });
+
+                if (response.ok) {
+                    alert('Logout successful!');
+                    // Update the navbar to reflect the logged-out state
+                    updateNavbarForLoggedOutUser();
+                    // Redirect to the home page
+                    window.location.href = '/';
+                } else {
+                    alert('Failed to log out. Please try again.');
+                }
+            } catch (error) {
+                console.error('Error during logout:', error);
+                alert('An error occurred during logout.');
+            }
+        });
+    }
+
+    // Smooth scroll for Home link
+    const homeLink = document.querySelector('#navbar a[href="/src/pages/home.html"]');
+    if (homeLink) {
+        homeLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            window.location.href = '/src/pages/home.html';
+        });
+    }
 });
 
 function setupSearchAndMenu() {
@@ -47,23 +82,60 @@ async function checkLoginStatus() {
 function updateNavbar(isLoggedIn) {
     const navbar = document.getElementById('navbar');
     if (!navbar) return;
+
     const links = isLoggedIn
-        ? ['Home', 'Cart', 'Upload', 'Logout']
-        : ['Home', 'Login', 'Register'];
-    
-    navbar.innerHTML = links.map(link => 
-        `<a href="${link.toLowerCase()}.html" onclick="loadPage('${link.toLowerCase()}')">${link}</a>`
-    ).join('');
+        ? ['Home', 'About', 'Cart', 'Upload', 'Logout']
+        : ['Home', 'About', 'Login', 'Register'];
+
+    navbar.innerHTML = links.map(link => {
+        if (link === 'Home') {
+            return `<a href="#home">${link}</a>`;
+        } else if (link === 'Logout') {
+            return `<a href="#" id="logout-link">${link}</a>`;
+        }
+        return `<a href="${link.toLowerCase()}.html">${link}</a>`;
+    }).join('');
+
+    // Add event listener for the logout link
+    const logoutLink = document.getElementById('logout-link');
+    if (logoutLink) {
+        logoutLink.addEventListener('click', async (e) => {
+            e.preventDefault();
+            try {
+                const response = await fetch('/api/auth/logout', { method: 'POST' });
+                if (response.ok) {
+                    alert('Logout successful!');
+                    updateNavbar(false); // Update navbar to logged-out state
+                    loadPage('home'); // Load home page
+                } else {
+                    alert('Failed to log out. Please try again.');
+                }
+            } catch (error) {
+                console.error('Error during logout:', error);
+                alert('An error occurred during logout.');
+            }
+        });
+    }
+
+    // Add smooth scroll for the home link
+    const homeLink = document.getElementById('home-link');
+    if (homeLink) {
+        homeLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            document.querySelector('#home').scrollIntoView({ behavior: 'smooth' });
+        });
+    }
 }
 
 async function loadPage(page) {
     const content = document.getElementById('page-content');
     if (!content) return;
-    
+
     try {
-        switch(page) {
+        switch (page) {
             case 'home':
             case 'register':
+            case 'about':
             case 'login':
             case 'cart':
             case 'upload':
@@ -72,11 +144,6 @@ async function loadPage(page) {
                 content.innerHTML = await response.text();
                 if (page === 'register') setupRegisterForm();
                 if (page === 'login') setupLoginForm();
-                break;
-            case 'logout':
-                await fetch('/api/auth/logout', { method: 'POST' });
-                checkLoginStatus();
-                loadPage('home');
                 break;
             default:
                 content.innerHTML = '<h2>Page Not Found</h2><p>Sorry, this page does not exist.</p>';
@@ -153,4 +220,14 @@ function setupNavLinks() {
     document.querySelectorAll('#navbar a').forEach(link => {
         link.addEventListener('click', (e) => e.preventDefault());
     });
+}
+
+// Function to update the navbar for logged-out users
+function updateNavbarForLoggedOutUser() {
+    const navbar = document.querySelector('.navbar ul');
+    navbar.innerHTML = `
+        <li><a href="/">Home</a></li>
+        <li><a href="/pages/login.html">Login</a></li>
+        <li><a href="/pages/register.html">Register</a></li>
+    `;
 }

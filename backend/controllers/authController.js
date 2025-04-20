@@ -37,10 +37,14 @@ const signup = async (req, res) => {
         const hashedPassword = await bcrypt.hash(password, 10);
 
         // Insert new user into the database
-        await db.query(
+        const [result] = await db.query(
             'INSERT INTO users (username, password, mobile, email) VALUES (?, ?, ?, ?)',
             [username, hashedPassword, mobile, email]
         );
+
+        const newUser = { id: result.insertId, username };
+
+        req.session.user = { id: newUser.id, username: newUser.username };
 
         res.status(201).json({ message: 'User registered successfully' });
     } catch (error) {
@@ -50,24 +54,27 @@ const signup = async (req, res) => {
 };
 
 const login = async (req, res) => {
-    const { username, password } = req.body;
     try {
+        const { username, password } = req.body;
         const [rows] = await db.query('SELECT * FROM users WHERE username = ?', [username]);
+
         if (rows.length === 0) {
             return res.status(401).json({ message: 'Invalid username or password' });
         }
 
         const user = rows[0];
         const isPasswordValid = await bcrypt.compare(password, user.password);
+
         if (!isPasswordValid) {
             return res.status(401).json({ message: 'Invalid username or password' });
         }
 
+        // Set session
         req.session.user = { id: user.id, username: user.username };
         res.json({ message: 'Login successful' });
     } catch (error) {
-        console.error('Error during login:', error);
-        res.status(500).json({ message: 'Internal server error' });
+        console.error('Login error:', error);
+        res.status(500).json({ message: 'An error occurred during login' });
     }
 };
 
@@ -77,7 +84,8 @@ const logout = (req, res) => {
             console.error('Error during logout:', err);
             return res.status(500).json({ message: 'Failed to log out' });
         }
-        res.clearCookie('connect.sid');
+        res.clearCookie('connect.sid', { path: '/' }); // Ensure the cookie is cleared
+        console.log('Logout successful');
         res.json({ message: 'Logout successful' });
     });
 };
