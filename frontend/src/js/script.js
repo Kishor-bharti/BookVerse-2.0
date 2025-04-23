@@ -89,7 +89,7 @@ function updateNavbar(isLoggedIn) {
 
     navbar.innerHTML = links.map(link => {
         if (link === 'Home') {
-            return `<a href="#home">${link}</a>`;
+            return `<a href="home.html">${link}</a>`;
         } else if (link === 'Logout') {
             return `<a href="#" id="logout-link">${link}</a>`;
         }
@@ -106,7 +106,7 @@ function updateNavbar(isLoggedIn) {
                 if (response.ok) {
                     alert('Logout successful!');
                     updateNavbar(false); // Update navbar to logged-out state
-                    loadPage('home'); // Load home page
+                    window.location.href = 'home.html'; // Redirect to home page
                 } else {
                     alert('Failed to log out. Please try again.');
                 }

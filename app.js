@@ -18,8 +18,7 @@ app.use(session({
 
 // Middleware to log session user for API routes
 app.use((req, res, next) => {
-    // Exclude static file requests
-    if (req.path.startsWith('/api') || req.path.endsWith('.html')) {
+    if (req.path.startsWith('/api')) {
         console.log(`Request Path: ${req.path}, Session User:`, req.session.user);
     }
     next();
