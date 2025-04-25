@@ -1,0 +1,98 @@
+<div class="box">
+                <img src="/images/p1.png" alt="">
+                <h3>IT</h3>
+                <div class="content">
+                    <span>$15</span>
+                    <a href="https://www.goodreads.com/book/show/830502.It" target="_blank">Buy</a>
+                </div>
+            </div>
+
+            <div class="box">
+                <img src="/images/p2.png" alt="">
+                <h3>Norwegian Wood</h3>
+                <div class="content">
+                    <span>$20</span>
+                    <a href="https://www.goodreads.com/book/show/11297.Norwegian_Wood?from_search=true&from_srp=true&qid=vNDCFZwvmJ&rank=1"
+                        target="_blank">Buy</a>
+                </div>
+            </div>
+
+            <div class="box">
+                <img src="/images/p3.png" alt="">
+                <h3>It Ends With Us</h3>
+                <div class="content">
+                    <span>$10</span>
+                    <a href="https://www.goodreads.com/book/show/27362503-it-ends-with-us?from_search=true&from_srp=true&qid=dhqFl19T0M&rank=1"
+                        target="_blank">Buy</a>
+                </div>
+            </div>
+
+            <div class="box">
+                <img src="/images/p4.png" alt="">
+                <h3>Five Feet Apart</h3>
+                <div class="content">
+                    <span>$25</span>
+                    <a href="https://www.goodreads.com/book/show/39939417-five-feet-apart?from_search=true&from_srp=true&qid=rxKhiODJW0&rank=1"
+                        target="_blank">Buy</a>
+                </div>
+            </div>
+
+            <div class="box">
+                <img src="/images/p5.png" alt="">
+                <h3>All This Time</h3>
+                <div class="content">
+                    <span>$20</span>
+                    <a href="https://www.goodreads.com/book/show/50892133-all-this-time?from_search=true&from_srp=true&qid=oEeSzNVzyC&rank=1"
+                        target="_blank">Buy</a>
+                </div>
+            </div>
+
+            <div class="box">
+                <img src="/images/p6.png" alt="">
+                <h3>Think Like A Monk</h3>
+                <div class="content">
+                    <span>$35</span>
+                    <a href="https://www.goodreads.com/book/show/51942513-think-like-a-monk?from_search=true&from_srp=true&qid=2pCqHVkzPf&rank=1"
+                        target="_blank">Buy</a>
+                </div>
+            </div>
+
+            <div class="box">
+                <img src="/images/p7.png" alt="">
+                <h3>Kafka On The Shore</h3>
+                <div class="content">
+                    <span>$20</span>
+                    <a href="https://www.goodreads.com/book/show/4929.Kafka_on_the_Shore?from_search=true&from_srp=true&qid=aztCVgQJM0&rank=1"
+                        target="_blank">Buy</a>
+                </div>
+            </div>
+
+            <div class="box">
+                <img src="/images/p8.png" alt="">
+                <h3>Milk And Honey</h3>
+                <div class="content">
+                    <span>$22</span>
+                    <a href="https://www.goodreads.com/book/show/23513349-milk-and-honey?from_search=true&from_srp=true&qid=RhDpOfe8zN&rank=1"
+                        target="_blank">Buy</a>
+                </div>
+            </div>
+
+            <div class="box">
+                <img src="/images/p9.png" alt="">
+                <h3>Whiskey Words</h3>
+                <div class="content">
+                    <span>$28</span>
+                    <a href="https://www.goodreads.com/book/show/28159939-whiskey-words-and-a-shovel-i?from_search=true&from_srp=true&qid=bJWPRIMwBW&rank=1"
+                        target="_blank">Buy</a>
+                </div>
+            </div>
+
+            <div class="box">
+                <img src="/images/p10.png" alt="">
+                <h3>Pillow Thoughts</h3>
+                <div class="content">
+                    <span>$12</span>
+                    <a href="https://www.goodreads.com/book/show/38507175-healing-the-heart?from_search=true&from_srp=true&qid=UG3DE63uXz&rank=2"
+                        target="_blank">Buy</a>
+                </div>
+            </div>

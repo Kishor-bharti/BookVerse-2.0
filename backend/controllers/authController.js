@@ -3,12 +3,18 @@ const bcrypt = require('bcrypt');
 
 let db;
 async function initDb() {
-    db = await mysql.createConnection({
-        host: 'localhost',
-        user: 'root',
-        password: '7517',
-        database: 'users'
-    });
+    try {
+        db = await mysql.createConnection({
+            host: 'localhost',
+            user: 'root',
+            password: '1234',
+            database: 'users'
+        });
+        console.log('Database connected successfully');
+    } catch (error) {
+        console.error('Error connecting to the database:', error);
+        process.exit(1); // Exit the process if the database connection fails
+    }
 }
 initDb();
 
@@ -90,4 +96,4 @@ const logout = (req, res) => {
     });
 };
 
-module.exports = { getStatus, signup, login, logout };
+module.exports = { getStatus, signup, login, logout, db };

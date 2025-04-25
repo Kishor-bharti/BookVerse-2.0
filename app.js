@@ -2,6 +2,7 @@ const express = require('express');
 const path = require('path');
 const session = require('express-session');
 const authRoutes = require('./backend/routes/authRoutes');
+const booksRoutes = require('./backend/routes/booksRoutes');
 const app = express();
 
 app.use(express.json());
@@ -39,6 +40,7 @@ app.use(express.static(path.join(__dirname, 'frontend/src')));
 
 // Authentication routes
 app.use('/api/auth', authRoutes);
+app.use('/api', booksRoutes);
 
 // Serve index.html for root URL
 app.get('/', (req, res) => {

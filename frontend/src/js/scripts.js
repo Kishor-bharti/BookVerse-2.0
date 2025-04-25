@@ -3,69 +3,6 @@ document.addEventListener('DOMContentLoaded', () => {
     setupNavLinks();
     setupSearchAndMenu();
 
-    const uploadForm = document.getElementById('uploadForm');
-    const submitButton = uploadForm.querySelector('button[type="submit"]');
-    const loadingIndicator = document.createElement('p');
-    loadingIndicator.textContent = 'Uploading...';
-    loadingIndicator.style.display = 'none';
-    uploadForm.appendChild(loadingIndicator);
-
-    uploadForm.addEventListener('submit', async (event) => {
-        event.preventDefault();
-
-        const bookName = document.getElementById('bookName').value.trim();
-        const price = document.getElementById('price').value.trim();
-        const bookImage = document.getElementById('bookImage').value.trim();
-
-        // Client-side validation
-        if (!bookName || !price || !bookImage) {
-            alert('All fields are required!');
-            return;
-        }
-
-        if (isNaN(price) || parseFloat(price) <= 0) {
-            alert('Please enter a valid price!');
-            return;
-        }
-
-        try {
-            // Show loading indicator and disable submit button
-            loadingIndicator.style.display = 'block';
-            submitButton.disabled = true;
-
-            const response = await fetch('/api/upload', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ bookName, price, bookImage }),
-            });
-
-            const result = await response.json();
-            if (response.ok) {
-                alert(result.message);
-                uploadForm.reset();
-
-                // Optionally, update the book list dynamically
-                if (typeof updateBookList === 'function') {
-                    updateBookList();
-                }
-            } else {
-                alert(result.error || 'Failed to upload book');
-            }
-        } catch (error) {
-            console.error('Error uploading book:', error);
-            alert('An error occurred while uploading the book. Please try again.');
-        } finally {
-            // Hide loading indicator and re-enable submit button
-            loadingIndicator.style.display = 'none';
-            submitButton.disabled = false;
-        }
-    });
-    
-    // Load the initial page content
-
-
     // Add event listener for the logout button
     const logoutButton = document.querySelector('#logout-button');
     if (logoutButton) {
@@ -293,39 +230,4 @@ function updateNavbarForLoggedOutUser() {
         <li><a href="/pages/login.html">Login</a></li>
         <li><a href="/pages/register.html">Register</a></li>
     `;
-}
-
-async function updateBookList() {
-    const productsContainer = document.querySelector('.products-container');
-    if (!productsContainer) return;
-
-    try {
-        const response = await fetch('/api/books');
-        const books = await response.json();
-
-        productsContainer.innerHTML = '';
-
-        if (books.length === 0) {
-            productsContainer.innerHTML = '<p>No books available at the moment.</p>';
-        } else {
-            books.forEach(book => {
-                const bookBox = document.createElement('div');
-                bookBox.classList.add('box');
-
-                bookBox.innerHTML = `
-                    <img src="${book.Book_image}" alt="${book.Book_name}">
-                    <h3>${book.Book_name}</h3>
-                    <div class="content">
-                        <span>$${book.price}</span>
-                        <a href="/book/${book.id}" target="_blank">Buy</a>
-                    </div>
-                `;
-
-                productsContainer.appendChild(bookBox);
-            });
-        }
-    } catch (error) {
-        console.error('Error fetching books:', error);
-        productsContainer.innerHTML = '<p>Failed to load books. Please try again later.</p>';
-    }
 }
