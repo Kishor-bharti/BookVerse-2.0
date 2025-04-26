@@ -4,65 +4,67 @@ document.addEventListener('DOMContentLoaded', () => {
     setupSearchAndMenu();
 
     const uploadForm = document.getElementById('uploadForm');
-    const submitButton = uploadForm.querySelector('button[type="submit"]');
-    const loadingIndicator = document.createElement('p');
-    loadingIndicator.textContent = 'Uploading...';
-    loadingIndicator.style.display = 'none';
-    uploadForm.appendChild(loadingIndicator);
+    if (uploadForm) {
+        const submitButton = uploadForm.querySelector('button[type="submit"]');
+        const loadingIndicator = document.createElement('p');
+        loadingIndicator.textContent = 'Uploading...';
+        loadingIndicator.style.display = 'none';
+        uploadForm.appendChild(loadingIndicator);
 
-    uploadForm.addEventListener('submit', async (event) => {
-        event.preventDefault();
+        uploadForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
 
-        const bookName = document.getElementById('bookName').value.trim();
-        const price = document.getElementById('price').value.trim();
-        const bookImage = document.getElementById('bookImage').value.trim();
+            const bookName = document.getElementById('bookName').value.trim();
+            const price = document.getElementById('price').value.trim();
+            const bookImage = document.getElementById('bookImage').value.trim();
 
-        // Client-side validation
-        if (!bookName || !price || !bookImage) {
-            alert('All fields are required!');
-            return;
-        }
-
-        if (isNaN(price) || parseFloat(price) <= 0) {
-            alert('Please enter a valid price!');
-            return;
-        }
-
-        try {
-            // Show loading indicator and disable submit button
-            loadingIndicator.style.display = 'block';
-            submitButton.disabled = true;
-
-            const response = await fetch('/api/upload', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ bookName, price, bookImage }),
-            });
-
-            const result = await response.json();
-            if (response.ok) {
-                alert(result.message);
-                uploadForm.reset();
-
-                // Optionally, update the book list dynamically
-                if (typeof updateBookList === 'function') {
-                    updateBookList();
-                }
-            } else {
-                alert(result.error || 'Failed to upload book');
+            // Client-side validation
+            if (!bookName || !price || !bookImage) {
+                alert('All fields are required!');
+                return;
             }
-        } catch (error) {
-            console.error('Error uploading book:', error);
-            alert('An error occurred while uploading the book. Please try again.');
-        } finally {
-            // Hide loading indicator and re-enable submit button
-            loadingIndicator.style.display = 'none';
-            submitButton.disabled = false;
-        }
-    });
-    
+
+            if (isNaN(price) || parseFloat(price) <= 0) {
+                alert('Please enter a valid price!');
+                return;
+            }
+
+            try {
+                // Show loading indicator and disable submit button
+                loadingIndicator.style.display = 'block';
+                submitButton.disabled = true;
+
+                const response = await fetch('/api/upload', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ bookName, price, bookImage }),
+                });
+
+                const result = await response.json();
+                if (response.ok) {
+                    alert(result.message);
+                    uploadForm.reset();
+
+                    // Optionally, update the book list dynamically
+                    if (typeof updateBookList === 'function') {
+                        updateBookList();
+                    }
+                } else {
+                    alert(result.error || 'Failed to upload book');
+                }
+            } catch (error) {
+                console.error('Error uploading book:', error);
+                alert('An error occurred while uploading the book. Please try again.');
+            } finally {
+                // Hide loading indicator and re-enable submit button
+                loadingIndicator.style.display = 'none';
+                submitButton.disabled = false;
+            }
+        });
+    }
+
     // Load the initial page content
 
 

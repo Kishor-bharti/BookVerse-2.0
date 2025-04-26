@@ -1,22 +1,23 @@
 const mysql = require('mysql2/promise');
 const bcrypt = require('bcrypt');
+const db = require('../config/db');
 
-let db;
-async function initDb() {
-    try {
-        db = await mysql.createConnection({
-            host: 'localhost',
-            user: 'root',
-            password: '1234',
-            database: 'users'
-        });
-        console.log('Database connected successfully');
-    } catch (error) {
-        console.error('Error connecting to the database:', error);
-        process.exit(1); // Exit the process if the database connection fails
-    }
-}
-initDb();
+// let db;
+// async function initDb() {
+//     try {
+//         db = await mysql.createConnection({
+//             host: 'localhost',
+//             user: 'root',
+//             password: '7517',
+//             database: 'users'
+//         });
+//         console.log('Database connected successfully');
+//     } catch (error) {
+//         console.error('Error connecting to the database:', error);
+//         process.exit(1); // Exit the process if the database connection fails
+//     }
+// }
+// initDb();
 
 const getStatus = (req, res) => {
     res.json({ isLoggedIn: !!req.session.user });
@@ -96,4 +97,4 @@ const logout = (req, res) => {
     });
 };
 
-module.exports = { getStatus, signup, login, logout, db };
+module.exports = { getStatus, signup, login, logout };

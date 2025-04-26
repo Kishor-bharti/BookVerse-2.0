@@ -4,16 +4,17 @@
   "description": "BookVerse 2.0 - A simple bookstore application",
   "main": "app.js",
   "scripts": {
-      "start": "node app.js",
-      "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-      "express": "^4.21.1",
-      "mysql2": "^3.6.0",
-      "express-session": "^1.17.3",
-      "bcrypt": "^5.1.0"
+    "bcrypt": "^5.1.0",
+    "dotenv": "^16.5.0",
+    "express": "^4.21.1",
+    "express-session": "^1.17.3",
+    "mysql2": "^3.6.0"
   }
 }

@@ -23,7 +23,30 @@ CREATE TABLE users (
     email VARCHAR(100) NOT NULL UNIQUE,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
+
+-- Stores book info uploaded by users.
+CREATE TABLE books (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    Book_name VARCHAR(255) NOT NULL,
+    price DECIMAL(10, 2) NOT NULL,
+    Book_image VARCHAR(255) NOT NULL,
+    seller_id INT,
+    is_sold BOOLEAN DEFAULT FALSE,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (seller_id) REFERENCES users(id)
+);
 ```
+
+Create the .env file in the root and put the following code inside!
+
+```.env
+DB_HOST   = localhost
+DB_USER  = root
+DB_PASS = YOUR_PASSWORD
+DB_NAME = users
+```
+
+Run `npm start` command in terminal (or update or to set the powershell script using `Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass` command temporarly!)
 
 Run ```node app.js``` command in terminal, after locating the project root dir.
 Then go to localhost:3000 (port number!)
