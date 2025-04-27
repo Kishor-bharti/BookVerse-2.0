@@ -44,6 +44,7 @@ DB_HOST   = localhost
 DB_USER  = root
 DB_PASS = YOUR_PASSWORD
 DB_NAME = users
+SESSION_SECRET = bookverse-secret-key-2025
 ```
 
 Run `npm start` command in terminal (or update or to set the powershell script using `Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass` command temporarly!)
