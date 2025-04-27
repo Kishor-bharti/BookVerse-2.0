@@ -57,3 +57,10 @@ Then go to localhost:3000 (port number!)
 ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '7517';
 FLUSH PRIVILEGES;
 ```
+
+## User Interface of the product:
+![My Local Image](/frontend/public/images/home.png)
+![My Local Image](/frontend/public/images/Books_catalog.png)
+![My Local Image](/frontend/public/images/Login.png)
+![My Local Image](/frontend/public/images/Register.png)
+![My Local Image](/frontend/public/images/upload.png)
