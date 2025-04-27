@@ -287,20 +287,19 @@ async function updateBookList() {
                 const bookBox = document.createElement('div');
                 bookBox.classList.add('box');
 
+                // Update property names to match PostgreSQL column names
                 const bookHTML = `
                     <div class="product">
-                        <img src="/images/${book.Book_image}" alt="${book.Book_name}">
-                        <h3>${book.Book_name}</h3>
+                        <img src="/images/${book.book_image}" alt="${book.book_name}">
+                        <h3>${book.book_name}</h3>
                         <div class="content">
                             <span>Price: $${book.price}</span>
                             <a href="/book/${book.id}" target="_blank">Buy</a>
                         </div>
-
                     </div>
                 `;
 
                 bookBox.innerHTML = bookHTML;
-
                 productsContainer.appendChild(bookBox);
             });
         }
