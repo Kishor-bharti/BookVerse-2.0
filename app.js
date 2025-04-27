@@ -3,19 +3,6 @@ const path = require('path');
 const session = require('express-session');
 const authRoutes = require('./backend/routes/authRoutes');
 const booksRoutes = require('./backend/routes/booksRoutes');
-const multer = require('multer');
-
-// Set storage destination and filename
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, path.join(__dirname, 'frontend/public/images')); // ✅ Save inside /frontend/public/images
-    },
-    filename: function (req, file, cb) {
-        cb(null, Date.now() + '-' + file.originalname); // Optional: prevent filename conflicts
-    }
-});
-
-const upload = multer({ storage });
 
 const app = express();
 
@@ -49,7 +36,7 @@ app.use((req, res, next) => {
 });
 
 // Static file middleware
-app.use(express.static(path.join(__dirname, 'frontend/public')));
+app.use(express.static(path.join(__dirname, 'frontend', 'public')));
 app.use(express.static(path.join(__dirname, 'frontend/src')));
 
 // Authentication routes

@@ -45,9 +45,11 @@ router.post('/upload', upload.single('bookImage'), async (req, res) => {
 // Fetch all available books (only unsold books)
 router.get('/books', async (req, res) => {
     try {
+        console.log('Fetching books from database...');
         const [books] = await db.query(
             'SELECT id, Book_name, price, Book_image, seller_id, created_at FROM books WHERE is_sold = FALSE'
         );
+        console.log('Books fetched:', books);
         res.json(books);
     } catch (error) {
         console.error('Error fetching books:', error);

@@ -3,6 +3,12 @@ document.addEventListener('DOMContentLoaded', () => {
     setupNavLinks();
     setupSearchAndMenu();
 
+    // Call updateBookList if we're on the home page
+    const productsContainer = document.querySelector('.products-container');
+    if (productsContainer) {
+        updateBookList();
+    }
+
     const uploadForm = document.getElementById('uploadForm');
 
     if (uploadForm) {
@@ -13,14 +19,17 @@ document.addEventListener('DOMContentLoaded', () => {
             try {
                 const res = await fetch('/api/upload', {
                     method: 'POST',
-                    body: formData
+                    body: formData  // FormData automatically sets the correct Content-Type
                 });
 
                 if (res.ok) {
                     alert('Book uploaded successfully!');
                     uploadForm.reset();
+                    // Optionally redirect to home page or books page
+                    window.location.href = '/pages/home.html';
                 } else {
-                    alert('Failed to upload book.');
+                    const errorData = await res.json();
+                    alert(errorData.error || 'Failed to upload book.');
                 }
             } catch (err) {
                 console.error('Error uploading book:', err);
@@ -278,14 +287,19 @@ async function updateBookList() {
                 const bookBox = document.createElement('div');
                 bookBox.classList.add('box');
 
-                bookBox.innerHTML = `
-                    <img src="${book.Book_image}" alt="${book.Book_name}">
-                    <h3>${book.Book_name}</h3>
-                    <div class="content">
-                        <span>$${book.price}</span>
-                        <a href="/book/${book.id}" target="_blank">Buy</a>
+                const bookHTML = `
+                    <div class="product">
+                        <img src="/images/${book.Book_image}" alt="${book.Book_name}">
+                        <h3>${book.Book_name}</h3>
+                        <div class="content">
+                            <span>Price: $${book.price}</span>
+                            <a href="/book/${book.id}" target="_blank">Buy</a>
+                        </div>
+
                     </div>
                 `;
+
+                bookBox.innerHTML = bookHTML;
 
                 productsContainer.appendChild(bookBox);
             });
