@@ -48,7 +48,7 @@ SESSION_SECRET = bookverse-secret-key-2025
 ```
 
 Run `npm start` command in terminal (or update or to set the powershell script using `Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass` command temporarly!)
-
+or
 Run ```node app.js``` command in terminal, after locating the project root dir.
 Then go to localhost:3000 (port number!)
 
