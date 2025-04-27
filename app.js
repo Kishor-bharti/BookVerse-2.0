@@ -3,6 +3,7 @@ const path = require('path');
 const session = require('express-session');
 const authRoutes = require('./backend/routes/authRoutes');
 const booksRoutes = require('./backend/routes/booksRoutes');
+const PORT = 3000;
 
 const app = express();
 
@@ -48,6 +49,6 @@ app.get('/', (req, res) => {
     res.redirect('/src/pages/home.html');
 });
 
-app.listen(3000, () => {
-    console.log('Server started on port 3000');
+app.listen(PORT, () => {
+    console.log(`Server running at http://localhost:${PORT}`);
 });
