@@ -59,17 +59,22 @@ FLUSH PRIVILEGES;
 ```
 
 ## User Interface of the product:
-> Home Page
+#### Home Page
+
 ![My Local Image](/frontend/public/images/home.png)
 
-> Books Catalog
+#### Books Catalog
+
 ![My Local Image](/frontend/public/images/Books_catalog.png)
 
-> Login Page
+#### Login Page
+
 ![My Local Image](/frontend/public/images/Login.png)
 
-> Signup Page
+#### Signup Page
+
 ![My Local Image](/frontend/public/images/Register.png)
 
-> Upload Books
+#### Upload Books
+
 ![My Local Image](/frontend/public/images/upload.png)
