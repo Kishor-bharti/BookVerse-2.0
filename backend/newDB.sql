@@ -15,9 +15,9 @@ CREATE TABLE users (
 
 CREATE TABLE books (
     id SERIAL PRIMARY KEY,
-    Book_name VARCHAR(255) NOT NULL,
+    book_name VARCHAR(255) NOT NULL,
     price DECIMAL(10,2) NOT NULL,
-    Book_image VARCHAR(255),
+    book_image VARCHAR(255),
     seller_id INTEGER REFERENCES users(id),
     is_sold BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP

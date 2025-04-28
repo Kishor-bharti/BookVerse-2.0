@@ -3,20 +3,26 @@ const path = require('path');
 const session = require('express-session');
 const authRoutes = require('./backend/routes/authRoutes');
 const booksRoutes = require('./backend/routes/booksRoutes');
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 const app = express();
 
 app.use(express.json());
+
+// Production check
+const isProduction = process.env.NODE_ENV === 'production';
+
 app.use(session({
     secret: process.env.SESSION_SECRET || 'your-secret-key',
     resave: false,
     saveUninitialized: false,
     cookie: {
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
+        secure: isProduction, // Only use secure cookies in production
+        sameSite: isProduction ? 'none' : 'lax', // Required for cross-site cookies in production
         maxAge: 24 * 60 * 60 * 1000 // 1 day
-    }
+    },
+    proxy: isProduction // Trust the reverse proxy in production
 }));
 
 // Middleware to log session user for API routes

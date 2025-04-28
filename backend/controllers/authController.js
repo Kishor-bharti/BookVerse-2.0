@@ -16,14 +16,15 @@ const signup = async (req, res) => {
             [username, email]
         );
 
-        if (rows.length > 0) {
-            const existingUser = rows[0];
-            if (existingUser.username === username) {
-                return res.status(409).json({ message: 'Username already exists' });
-            }
-            if (existingUser.email === email) {
-                return res.status(409).json({ message: 'Email already exists' });
-            }
+        // Check all returned rows for conflicts
+        const usernameExists = rows.some(user => user.username === username);
+        const emailExists = rows.some(user => user.email === email);
+
+        if (usernameExists) {
+            return res.status(409).json({ message: 'Username already exists' });
+        }
+        if (emailExists) {
+            return res.status(409).json({ message: 'Email already exists' });
         }
 
         // Hash the password

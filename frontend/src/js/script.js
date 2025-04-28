@@ -19,6 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
             try {
                 const res = await fetch('/api/upload', {
                     method: 'POST',
+                    credentials: 'include', // Include credentials in the request
                     body: formData  // FormData automatically sets the correct Content-Type
                 });
 
@@ -109,7 +110,9 @@ function setupSearchAndMenu() {
 
 async function checkLoginStatus() {
     try {
-        const response = await fetch('/api/auth/status');
+        const response = await fetch('/api/auth/status', {
+            credentials: 'include' // Include credentials in the request
+        });
         const data = await response.json();
         updateNavbar(data.isLoggedIn);
     } catch (error) {
@@ -235,7 +238,10 @@ function setupLoginForm() {
             try {
                 const response = await fetch('/api/auth/login', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: { 
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'include', // Include credentials in the request
                     body: JSON.stringify({ username, password })
                 });
                 

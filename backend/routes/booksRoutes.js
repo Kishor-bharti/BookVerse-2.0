@@ -33,7 +33,7 @@ router.post('/upload', upload.single('bookImage'), async (req, res) => {
     const bookImage = req.file.filename;
 
     try {
-        const query = 'INSERT INTO books (Book_name, price, Book_image, seller_id, is_sold) VALUES ($1, $2, $3, $4, FALSE)';
+        const query = 'INSERT INTO books (book_name, price, book_image, seller_id, is_sold) VALUES ($1, $2, $3, $4, FALSE)';
         await db.query(query, [bookName, price, bookImage, sellerId]);
         res.status(201).json({ message: 'Book uploaded successfully' });
     } catch (error) {
@@ -47,7 +47,7 @@ router.get('/books', async (req, res) => {
     try {
         console.log('Fetching books from database...');
         const { rows } = await db.query(
-            'SELECT id, Book_name, price, Book_image, seller_id, created_at FROM books WHERE is_sold = FALSE'
+            'SELECT id, book_name, price, book_image, seller_id, created_at FROM books WHERE is_sold = FALSE'
         );
         console.log('Books fetched:', rows);
         res.json(rows);
