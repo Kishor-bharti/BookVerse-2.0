@@ -4,7 +4,7 @@ MySQL server and workbench: [Download](https://dev.mysql.com/downloads/mysql/)
 ### Install NodeJs:
 NodeJs: [Download](https://nodejs.org/en)
 
-  Setup: Install and configure Mysql server and workbench, install NodeJs on your system.
+  Setup: Install and configure Mysql server and workbench, install NodeJs on your system. 
 
 ### Import database:
 
