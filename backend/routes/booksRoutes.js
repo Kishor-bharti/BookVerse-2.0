@@ -8,7 +8,7 @@ const path = require('path');
 // Initialize Supabase client
 const supabase = createClient(
     process.env.SUPABASE_URL,
-    process.env.SUPABASE_SERVICE_ROLE_KEY
+    process.env.SUPABASE_ANON_KEY
 );
 
 // Setup multer (memory storage to directly upload buffer to Supabase)
@@ -36,7 +36,7 @@ router.post('/upload', upload.single('bookImage'), async (req, res) => {
 
         // Upload image to Supabase Storage
         const { data, error } = await supabase.storage
-            .from('book_image') // Your Supabase bucket name
+            .from(process.env.SUPABASE_STORAGE_BUCKET) // Your Supabase bucket name
             .upload(fileName, req.file.buffer, {
                 contentType: req.file.mimetype,
                 cacheControl: '3600',
@@ -50,7 +50,7 @@ router.post('/upload', upload.single('bookImage'), async (req, res) => {
 
         // Get public URL
         const { publicURL } = supabase.storage
-            .from('book_image')
+            .from(process.env.SUPABASE_STORAGE_BUCKET)
             .getPublicUrl(fileName);
 
         if (!publicURL) {
