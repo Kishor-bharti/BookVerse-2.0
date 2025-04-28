@@ -293,10 +293,10 @@ async function updateBookList() {
                 const bookBox = document.createElement('div');
                 bookBox.classList.add('box');
 
-                // Update property names to match PostgreSQL column names
+                // Important change here: Use book.book_image directly (it’s now a public URL)
                 const bookHTML = `
                     <div class="product">
-                        <img src="/images/${book.book_image}" alt="${book.book_name}">
+                        <img src="${book.book_image}" alt="${book.book_name}" style="max-width:100%; height:auto;">
                         <h3>${book.book_name}</h3>
                         <div class="content">
                             <span>Price: $${book.price}</span>
