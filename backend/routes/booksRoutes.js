@@ -31,7 +31,7 @@ router.post('/upload', upload.single('bookImage'), async (req, res) => {
     }
 
     try {
-        // Unique filename
+        // Unique filename, including the directory
         const fileName = `book_images/${Date.now()}-${req.file.originalname}`;
 
         // Upload image to Supabase Storage
@@ -48,12 +48,13 @@ router.post('/upload', upload.single('bookImage'), async (req, res) => {
             return res.status(500).json({ error: 'Failed to upload image to storage' });
         }
 
-        // Get public URL
-        const { publicURL } = supabase.storage
+        // Get public URL, including the directory path (book_images)
+        const { publicURL, error: urlError } = supabase.storage
             .from(process.env.SUPABASE_STORAGE_BUCKET)
             .getPublicUrl(fileName);
 
-        if (!publicURL) {
+        if (urlError) {
+            console.error('Error getting public URL:', urlError);
             return res.status(500).json({ error: 'Failed to retrieve public URL' });
         }
 
