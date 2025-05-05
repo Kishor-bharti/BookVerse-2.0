@@ -797,3 +797,18 @@ header.shadow {
 .remove-book-btn:hover {
     background: #c82333;
 }
+
+#cart-icon {
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+#cart-icon:hover {
+    transform: scale(1.1);
+    color: var(--main-color);
+}
+
+/* Make sure the cart icon stays highlighted when in cart page */
+body.cart-page #cart-icon {
+    color: var(--main-color);
+}

@@ -83,6 +83,19 @@ function setupSearchAndMenu() {
     let navbar = document.querySelector('.navbar');
     let header = document.querySelector('header');
 
+    // Setup cart icon click handler
+    const cartIcon = document.querySelector('#cart-icon');
+    if (cartIcon) {
+        cartIcon.onclick = () => {
+            if (isLoggedIn()) {
+                window.location.href = '/pages/cart.html';
+            } else {
+                alert('Please login to access your cart');
+                window.location.href = '/pages/login.html';
+            }
+        };
+    }
+
     if (document.querySelector('#search-icon')) {
         document.querySelector('#search-icon').onclick = () => {
             search.classList.toggle('active');
@@ -125,7 +138,7 @@ function updateNavbar(isLoggedIn) {
     if (!navbar) return;
 
     const links = isLoggedIn
-        ? ['Home', 'About', 'Cart', 'Upload', 'Logout']
+        ? ['Home', 'About', 'Upload', 'Logout']
         : ['Home', 'About', 'Login', 'Register'];
 
     navbar.innerHTML = links.map(link => {
