@@ -36,14 +36,22 @@ router.post('/cart/add', async (req, res) => {
         // Start transaction
         await db.query('BEGIN');
 
-        // Check if book exists and is not sold (with row lock)
+        // Check if book exists, is not sold, and is not owned by the current user
         const bookCheck = await db.query(
-            'SELECT * FROM books WHERE id = $1 AND is_sold = FALSE FOR SHARE',
-            [bookId]
+            'SELECT * FROM books WHERE id = $1 AND is_sold = FALSE AND seller_id != $2',
+            [bookId, req.session.user.id]
         );
 
         if (bookCheck.rows.length === 0) {
             await db.query('ROLLBACK');
+            // Check if it's the user's own book
+            const ownBookCheck = await db.query(
+                'SELECT * FROM books WHERE id = $1 AND seller_id = $2',
+                [bookId, req.session.user.id]
+            );
+            if (ownBookCheck.rows.length > 0) {
+                return res.status(403).json({ message: 'You cannot add your own book to cart' });
+            }
             return res.status(404).json({ message: 'Book not available' });
         }
 
@@ -103,7 +111,7 @@ router.post('/cart/checkout', async (req, res) => {
         // Start transaction
         await db.query('BEGIN');
 
-        // Get cart items with their prices and seller information, locking the books
+        // Get cart items with their prices and seller information, checking ownership
         const { rows: cartItems } = await db.query(
             `SELECT b.*, b.seller_id, u.wallet_balance as seller_balance 
              FROM books b 
@@ -111,9 +119,26 @@ router.post('/cart/checkout', async (req, res) => {
              JOIN users u ON b.seller_id = u.id
              WHERE c.user_id = $1
              AND b.is_sold = FALSE
+             AND b.seller_id != $1
              FOR UPDATE OF b`,  // Lock the books to prevent concurrent purchases
             [req.session.user.id]
         );
+
+        // Check if any books in cart are own books
+        const ownBooksCheck = await db.query(
+            `SELECT b.* FROM books b
+             JOIN cart_items c ON b.id = c.book_id
+             WHERE c.user_id = $1 AND b.seller_id = $1`,
+            [req.session.user.id]
+        );
+
+        if (ownBooksCheck.rows.length > 0) {
+            await db.query('ROLLBACK');
+            return res.status(403).json({ 
+                message: 'You cannot purchase your own books',
+                ownBooks: ownBooksCheck.rows.map(book => book.book_name)
+            });
+        }
 
         // Check if any books in cart are already sold
         const unavailableBooks = cartItems.filter(item => item.is_sold);

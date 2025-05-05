@@ -729,3 +729,14 @@ header.shadow {
         font-size: 1.2rem;
     }
 }
+
+/* ...existing styles... */
+
+.own-book-label {
+    padding: 8px 15px;
+    background: #6c757d;
+    color: white;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    pointer-events: none;
+}

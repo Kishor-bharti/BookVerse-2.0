@@ -2,7 +2,10 @@ const bcrypt = require('bcryptjs');
 const db = require('../config/db');
 
 const getStatus = (req, res) => {
-    res.json({ isLoggedIn: !!req.session.user });
+    res.json({ 
+        isLoggedIn: !!req.session.user,
+        userId: req.session.user ? req.session.user.id : null
+    });
 };
 
 const signup = async (req, res) => {

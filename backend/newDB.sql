@@ -42,8 +42,9 @@ CREATE TABLE purchases (
 CREATE TABLE cart_items (
     id SERIAL PRIMARY KEY,
     user_id INTEGER REFERENCES users(id),
-    book_id INTEGER UNIQUE REFERENCES books(id),
-    added_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    book_id INTEGER REFERENCES books(id),
+    added_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(user_id, book_id)  -- This ensures a user can't add the same book twice
 );
 
 -- wallet_transactions

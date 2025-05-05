@@ -284,6 +284,12 @@ async function updateBookList() {
         const response = await fetch('/api/books');
         const books = await response.json();
 
+        // Get current user's ID from a status check
+        const statusResponse = await fetch('/api/auth/status', {
+            credentials: 'include'
+        });
+        const { isLoggedIn, userId } = await statusResponse.json();
+
         productsContainer.innerHTML = '';
 
         if (books.length === 0) {
@@ -293,13 +299,19 @@ async function updateBookList() {
                 const bookBox = document.createElement('div');
                 bookBox.classList.add('box');
 
+                // Check if this is user's own book
+                const isOwnBook = isLoggedIn && userId === book.seller_id;
+
                 const bookHTML = `
                     <div class="product">
                         <img src="${book.book_image}" alt="${book.book_name}" style="max-width:100%; height:auto;">
                         <h3>${book.book_name}</h3>
                         <div class="content">
                             <span>Price: $${book.price}</span>
-                            <button onclick="addToCart(${book.id})" class="add-to-cart-btn">Add to Cart</button>
+                            ${isOwnBook ? 
+                                '<span class="own-book-label">Your Book</span>' :
+                                `<button onclick="addToCart(${book.id})" class="add-to-cart-btn">Add to Cart</button>`
+                            }
                         </div>
                     </div>
                 `;
