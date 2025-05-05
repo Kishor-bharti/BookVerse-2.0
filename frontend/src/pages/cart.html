@@ -105,6 +105,8 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             loadCartItems();
+            // Periodically check cart items availability
+            setInterval(loadCartItems, 30000); // Check every 30 seconds
         });
 
         async function loadCartItems() {
@@ -118,14 +120,18 @@
                 let total = 0;
 
                 if (cart.items && cart.items.length > 0) {
+                    const availableItems = cart.items.filter(item => item.status === 'Available');
+                    total = availableItems.reduce((sum, item) => sum + parseFloat(item.price), 0);
+
                     const itemsHTML = cart.items.map(item => {
-                        total += parseFloat(item.price);
+                        const isAvailable = item.status === 'Available';
                         return `
-                            <div class="cart-item">
+                            <div class="cart-item ${isAvailable ? '' : 'unavailable'}">
                                 <img src="${item.book_image}" alt="${item.book_name}">
                                 <div class="item-details">
                                     <h3>${item.book_name}</h3>
                                     <p>Price: $${item.price}</p>
+                                    ${!isAvailable ? '<p class="unavailable-text">This book is no longer available</p>' : ''}
                                 </div>
                                 <button onclick="removeFromCart(${item.id})" class="remove-btn">Remove</button>
                             </div>
@@ -133,6 +139,18 @@
                     }).join('');
                     
                     cartItemsContainer.innerHTML = itemsHTML;
+
+                    // Show warning if there are unavailable items
+                    const unavailableItems = cart.items.filter(item => item.status !== 'Available');
+                    if (unavailableItems.length > 0) {
+                        const warningDiv = document.createElement('div');
+                        warningDiv.className = 'cart-warning';
+                        warningDiv.innerHTML = `
+                            <p>Some items in your cart are no longer available. 
+                            They will be automatically removed during checkout.</p>
+                        `;
+                        cartItemsContainer.insertBefore(warningDiv, cartItemsContainer.firstChild);
+                    }
                 } else {
                     cartItemsContainer.innerHTML = '<p>Your cart is empty</p>';
                 }
@@ -166,7 +184,7 @@
             }
         }
 
-        // Add checkout functionality
+        // Add checkout functionality with better error handling
         document.getElementById('checkout-btn').addEventListener('click', async () => {
             try {
                 const response = await fetch('/api/cart/checkout', {
@@ -180,7 +198,12 @@
                     alert('Checkout successful! Thank you for your purchase.');
                     window.location.href = '/pages/home.html';
                 } else {
-                    alert(data.message || 'Checkout failed');
+                    if (data.unavailableBooks) {
+                        alert(`Some books are no longer available: ${data.unavailableBooks.join(', ')}`);
+                        loadCartItems(); // Refresh cart to show updated availability
+                    } else {
+                        alert(data.message || 'Checkout failed');
+                    }
                 }
             } catch (error) {
                 console.error('Error during checkout:', error);

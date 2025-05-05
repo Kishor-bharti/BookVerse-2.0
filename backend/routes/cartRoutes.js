@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const db = require('../config/db');
 
-// Get cart items
+// Get cart items with availability check
 router.get('/cart', async (req, res) => {
     if (!req.session.user) {
         return res.status(401).json({ message: 'Please login first' });
@@ -10,7 +10,9 @@ router.get('/cart', async (req, res) => {
 
     try {
         const { rows } = await db.query(
-            `SELECT b.* FROM books b
+            `SELECT b.*, 
+                    CASE WHEN b.is_sold = TRUE THEN 'Sold' ELSE 'Available' END as status
+             FROM books b
              JOIN cart_items c ON b.id = c.book_id
              WHERE c.user_id = $1`,
             [req.session.user.id]
@@ -31,13 +33,17 @@ router.post('/cart/add', async (req, res) => {
     const { bookId } = req.body;
     
     try {
-        // Check if book exists and is not sold
+        // Start transaction
+        await db.query('BEGIN');
+
+        // Check if book exists and is not sold (with row lock)
         const bookCheck = await db.query(
-            'SELECT * FROM books WHERE id = $1 AND is_sold = FALSE',
+            'SELECT * FROM books WHERE id = $1 AND is_sold = FALSE FOR SHARE',
             [bookId]
         );
 
         if (bookCheck.rows.length === 0) {
+            await db.query('ROLLBACK');
             return res.status(404).json({ message: 'Book not available' });
         }
 
@@ -48,6 +54,7 @@ router.post('/cart/add', async (req, res) => {
         );
 
         if (cartCheck.rows.length > 0) {
+            await db.query('ROLLBACK');
             return res.status(400).json({ message: 'Book already in cart' });
         }
 
@@ -57,8 +64,10 @@ router.post('/cart/add', async (req, res) => {
             [req.session.user.id, bookId]
         );
 
+        await db.query('COMMIT');
         res.json({ message: 'Book added to cart successfully' });
     } catch (error) {
+        await db.query('ROLLBACK');
         console.error('Error adding to cart:', error);
         res.status(500).json({ message: 'Failed to add book to cart' });
     }
@@ -94,15 +103,27 @@ router.post('/cart/checkout', async (req, res) => {
         // Start transaction
         await db.query('BEGIN');
 
-        // Get cart items with their prices and seller information
+        // Get cart items with their prices and seller information, locking the books
         const { rows: cartItems } = await db.query(
             `SELECT b.*, b.seller_id, u.wallet_balance as seller_balance 
              FROM books b 
              JOIN cart_items c ON b.id = c.book_id 
              JOIN users u ON b.seller_id = u.id
-             WHERE c.user_id = $1`,
+             WHERE c.user_id = $1
+             AND b.is_sold = FALSE
+             FOR UPDATE OF b`,  // Lock the books to prevent concurrent purchases
             [req.session.user.id]
         );
+
+        // Check if any books in cart are already sold
+        const unavailableBooks = cartItems.filter(item => item.is_sold);
+        if (unavailableBooks.length > 0) {
+            await db.query('ROLLBACK');
+            return res.status(400).json({ 
+                message: 'Some books in your cart are no longer available',
+                unavailableBooks: unavailableBooks.map(book => book.book_name)
+            });
+        }
 
         if (cartItems.length === 0) {
             await db.query('ROLLBACK');
@@ -114,7 +135,7 @@ router.post('/cart/checkout', async (req, res) => {
 
         // Get buyer's wallet balance
         const { rows: buyerRows } = await db.query(
-            'SELECT wallet_balance FROM users WHERE id = $1',
+            'SELECT wallet_balance FROM users WHERE id = $1 FOR UPDATE',
             [req.session.user.id]
         );
         
@@ -129,6 +150,19 @@ router.post('/cart/checkout', async (req, res) => {
 
         // Process each item in cart
         for (const item of cartItems) {
+            // Double-check book is still available
+            const { rows: bookCheck } = await db.query(
+                'SELECT is_sold FROM books WHERE id = $1 FOR UPDATE',
+                [item.id]
+            );
+
+            if (bookCheck[0].is_sold) {
+                await db.query('ROLLBACK');
+                return res.status(400).json({ 
+                    message: `Book "${item.book_name}" was just purchased by someone else` 
+                });
+            }
+
             // Deduct from buyer's wallet
             await db.query(
                 'UPDATE users SET wallet_balance = wallet_balance - $1 WHERE id = $2',
@@ -141,13 +175,12 @@ router.post('/cart/checkout', async (req, res) => {
                 [item.price, item.seller_id]
             );
 
-            // Record buyer's transaction
+            // Record transactions
             await db.query(
                 'INSERT INTO wallet_transactions (user_id, amount, type, description) VALUES ($1, $2, $3, $4)',
                 [req.session.user.id, item.price, 'DEBIT', `Purchased book: ${item.book_name}`]
             );
 
-            // Record seller's transaction
             await db.query(
                 'INSERT INTO wallet_transactions (user_id, amount, type, description) VALUES ($1, $2, $3, $4)',
                 [item.seller_id, item.price, 'CREDIT', `Sold book: ${item.book_name}`]
@@ -164,13 +197,13 @@ router.post('/cart/checkout', async (req, res) => {
                 'UPDATE books SET is_sold = TRUE WHERE id = $1',
                 [item.id]
             );
-        }
 
-        // Clear user's cart
-        await db.query(
-            'DELETE FROM cart_items WHERE user_id = $1',
-            [req.session.user.id]
-        );
+            // Remove this book from all users' carts
+            await db.query(
+                'DELETE FROM cart_items WHERE book_id = $1',
+                [item.id]
+            );
+        }
 
         // Commit transaction
         await db.query('COMMIT');

@@ -443,6 +443,31 @@ header.shadow {
     background: #d88550;
 }
 
+.cart-item.unavailable {
+    opacity: 0.7;
+    background: #f8f8f8;
+}
+
+.unavailable-text {
+    color: #dc3545;
+    font-size: 0.9rem;
+    margin-top: 5px;
+}
+
+.cart-warning {
+    background-color: #fff3cd;
+    color: #856404;
+    padding: 12px;
+    margin-bottom: 20px;
+    border: 1px solid #ffeeba;
+    border-radius: 4px;
+}
+
+.cart-warning p {
+    margin: 0;
+    font-size: 0.95rem;
+}
+
 /* Wallet Styles */
 .wallet-container {
     margin-top: 80px;
