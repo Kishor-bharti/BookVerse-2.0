@@ -293,14 +293,13 @@ async function updateBookList() {
                 const bookBox = document.createElement('div');
                 bookBox.classList.add('box');
 
-                // Important change here: Use book.book_image directly (it’s now a public URL)
                 const bookHTML = `
                     <div class="product">
-                        <img src="${book.book_image}" alt="${book.book_name} style="max-width:100%; height:auto;">
+                        <img src="${book.book_image}" alt="${book.book_name}" style="max-width:100%; height:auto;">
                         <h3>${book.book_name}</h3>
                         <div class="content">
                             <span>Price: $${book.price}</span>
-                            <a href="/book/${book.id}" target="_blank">Buy</a>
+                            <button onclick="addToCart(${book.id})" class="add-to-cart-btn">Add to Cart</button>
                         </div>
                     </div>
                 `;
@@ -313,4 +312,39 @@ async function updateBookList() {
         console.error('Error fetching books:', error);
         productsContainer.innerHTML = '<p>Failed to load books. Please try again later.</p>';
     }
+}
+
+// Function to add items to cart
+async function addToCart(bookId) {
+    try {
+        if (!isLoggedIn()) {
+            alert('Please login to add items to cart');
+            window.location.href = '/pages/login.html';
+            return;
+        }
+
+        const response = await fetch('/api/cart/add', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            credentials: 'include',
+            body: JSON.stringify({ bookId })
+        });
+
+        const data = await response.json();
+        if (response.ok) {
+            alert('Book added to cart successfully!');
+        } else {
+            alert(data.message || 'Failed to add book to cart');
+        }
+    } catch (error) {
+        console.error('Error adding to cart:', error);
+        alert('Failed to add book to cart');
+    }
+}
+
+// Helper function to check login status
+function isLoggedIn() {
+    return !!document.getElementById('logout-link');
 }
