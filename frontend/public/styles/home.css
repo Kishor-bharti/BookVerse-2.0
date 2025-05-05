@@ -536,6 +536,26 @@ header.shadow {
     font-size: 0.8rem;
 }
 
+.wallet-summary {
+    background: var(--bg-color);
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: var(--box-shadow);
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.wallet-summary h3 {
+    color: var(--text-color);
+    margin-bottom: 10px;
+}
+
+.wallet-summary .balance-amount {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: var(--main-color);
+}
+
 /*! Footer */
 .footer {
     display: grid;
