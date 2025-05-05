@@ -740,3 +740,40 @@ header.shadow {
     font-size: 0.9rem;
     pointer-events: none;
 }
+
+.book-description {
+    font-size: 0.9rem;
+    color: #666;
+    margin: 8px 0;
+    padding: 0 10px;
+    line-height: 1.4;
+    max-height: 60px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+}
+
+/* Style for the description textarea in upload form */
+#uploadForm textarea {
+    resize: vertical;
+    min-height: 80px;
+    font-family: inherit;
+    margin-bottom: 1rem;
+}
+
+.remove-book-btn {
+    padding: 8px 15px;
+    background: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background-color 0.2s;
+}
+
+.remove-book-btn:hover {
+    background: #c82333;
+}

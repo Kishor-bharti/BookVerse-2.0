@@ -306,10 +306,11 @@ async function updateBookList() {
                     <div class="product">
                         <img src="${book.book_image}" alt="${book.book_name}" style="max-width:100%; height:auto;">
                         <h3>${book.book_name}</h3>
+                        ${book.description ? `<p class="book-description">${book.description}</p>` : ''}
                         <div class="content">
                             <span>Price: $${book.price}</span>
                             ${isOwnBook ? 
-                                '<span class="own-book-label">Your Book</span>' :
+                                `<button onclick="removeBook(${book.id})" class="remove-book-btn">Remove Book</button>` :
                                 `<button onclick="addToCart(${book.id})" class="add-to-cart-btn">Add to Cart</button>`
                             }
                         </div>
@@ -323,6 +324,32 @@ async function updateBookList() {
     } catch (error) {
         console.error('Error fetching books:', error);
         productsContainer.innerHTML = '<p>Failed to load books. Please try again later.</p>';
+    }
+}
+
+// Function to remove a book
+async function removeBook(bookId) {
+    if (!confirm('Are you sure you want to remove this book? This action cannot be undone.')) {
+        return;
+    }
+
+    try {
+        const response = await fetch(`/api/books/${bookId}`, {
+            method: 'DELETE',
+            credentials: 'include'
+        });
+
+        const data = await response.json();
+        
+        if (response.ok) {
+            alert('Book removed successfully');
+            updateBookList(); // Refresh the book list
+        } else {
+            alert(data.error || 'Failed to remove book');
+        }
+    } catch (error) {
+        console.error('Error removing book:', error);
+        alert('Failed to remove book');
     }
 }
 
