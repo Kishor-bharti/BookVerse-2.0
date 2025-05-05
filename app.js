@@ -3,7 +3,8 @@ const path = require('path');
 const session = require('express-session');
 const authRoutes = require('./backend/routes/authRoutes');
 const booksRoutes = require('./backend/routes/booksRoutes');
-const cartRoutes = require('./backend/routes/cartRoutes'); // Add this line
+const cartRoutes = require('./backend/routes/cartRoutes');
+const walletRoutes = require('./backend/routes/walletRoutes');
 const PORT = process.env.PORT || 3000;
 
 const app = express();
@@ -50,7 +51,8 @@ app.use(express.static(path.join(__dirname, 'frontend/src')));
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api', booksRoutes);
-app.use('/api', cartRoutes); // Add this line
+app.use('/api', cartRoutes);
+app.use('/api', walletRoutes);
 
 // Serve index.html for root URL
 app.get('/', (req, res) => {

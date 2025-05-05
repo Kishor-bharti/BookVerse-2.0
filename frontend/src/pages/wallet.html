@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Wallet</title>
+    <link rel="stylesheet" href="/styles/home.css">
+    <link rel="icon" type="image/x-icon" href="/images/book-logo.ico">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+</head>
+<body>
+    <header>
+        <a href="#" class="logo">
+            <img src="/images/logo.png" alt="">
+        </a>
+        <i class='bx bx-menu' id="menu-icon"></i>
+        <nav class="navbar" id="navbar">
+            <!-- Navigation will be dynamically populated -->
+        </nav>
+        <div class="header-icon">
+            <i class='bx bx-cart-alt'></i>
+            <i class='bx bx-search-alt' id="search-icon"></i>
+        </div>
+        <div class="search-box">
+            <input type="search" name="" id="" placeholder="Search Here . . . ">
+        </div>
+    </header>
+
+    <section>
+        <div class="wallet-container" style="padding: 50px 60px;">
+            <h2>My Wallet</h2>
+            <div class="wallet-balance">
+                <h3>Current Balance</h3>
+                <div class="balance-amount">$<span id="wallet-balance">0.00</span></div>
+            </div>
+            
+            <div class="transaction-history">
+                <h3>Transaction History</h3>
+                <div id="transactions-list">
+                    <!-- Transactions will be dynamically inserted here -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer section -->
+    <footer>
+        <section class="footer">
+            <!-- ... existing footer content ... -->
+        </section>
+        <div class="copyright">
+            <p>Created With Love | &#169;2025 All Rights Reserved</p>
+        </div>
+    </footer>
+
+    <script src="/js/script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            loadWalletInfo();
+        });
+
+        async function loadWalletInfo() {
+            try {
+                // Fetch wallet balance
+                const balanceResponse = await fetch('/api/wallet/balance', {
+                    credentials: 'include'
+                });
+                const balanceData = await balanceResponse.json();
+                
+                if (balanceResponse.ok) {
+                    document.getElementById('wallet-balance').textContent = 
+                        parseFloat(balanceData.balance).toFixed(2);
+                }
+
+                // Fetch transaction history
+                const transactionsResponse = await fetch('/api/wallet/transactions', {
+                    credentials: 'include'
+                });
+                const transactionsData = await transactionsResponse.json();
+                
+                if (transactionsResponse.ok) {
+                    const transactionsList = document.getElementById('transactions-list');
+                    if (transactionsData.transactions.length === 0) {
+                        transactionsList.innerHTML = '<p>No transactions yet</p>';
+                    } else {
+                        const transactionsHTML = transactionsData.transactions.map(transaction => `
+                            <div class="transaction-item ${transaction.type.toLowerCase()}">
+                                <div class="transaction-details">
+                                    <span class="transaction-type">${transaction.type}</span>
+                                    <span class="transaction-amount">$${parseFloat(transaction.amount).toFixed(2)}</span>
+                                </div>
+                                <div class="transaction-description">${transaction.description}</div>
+                                <div class="transaction-date">
+                                    ${new Date(transaction.created_at).toLocaleDateString()}
+                                </div>
+                            </div>
+                        `).join('');
+                        
+                        transactionsList.innerHTML = transactionsHTML;
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading wallet info:', error);
+                alert('Failed to load wallet information');
+            }
+        }
+    </script>
+</body>
+</html>

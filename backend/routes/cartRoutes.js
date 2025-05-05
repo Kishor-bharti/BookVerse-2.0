@@ -94,10 +94,12 @@ router.post('/cart/checkout', async (req, res) => {
         // Start transaction
         await db.query('BEGIN');
 
-        // Get cart items with their prices
+        // Get cart items with their prices and seller information
         const { rows: cartItems } = await db.query(
-            `SELECT b.* FROM books b
-             JOIN cart_items c ON b.id = c.book_id
+            `SELECT b.*, b.seller_id, u.wallet_balance as seller_balance 
+             FROM books b 
+             JOIN cart_items c ON b.id = c.book_id 
+             JOIN users u ON b.seller_id = u.id
              WHERE c.user_id = $1`,
             [req.session.user.id]
         );
@@ -110,19 +112,47 @@ router.post('/cart/checkout', async (req, res) => {
         // Calculate total price
         const totalPrice = cartItems.reduce((sum, item) => sum + parseFloat(item.price), 0);
 
-        // Check user's wallet balance
-        const { rows: userRows } = await db.query(
+        // Get buyer's wallet balance
+        const { rows: buyerRows } = await db.query(
             'SELECT wallet_balance FROM users WHERE id = $1',
             [req.session.user.id]
         );
         
-        if (userRows[0].wallet_balance < totalPrice) {
+        const buyerBalance = parseFloat(buyerRows[0].wallet_balance);
+        
+        if (buyerBalance < totalPrice) {
             await db.query('ROLLBACK');
-            return res.status(400).json({ message: 'Insufficient wallet balance' });
+            return res.status(400).json({ 
+                message: `Insufficient balance. Your balance: $${buyerBalance.toFixed(2)}, Required: $${totalPrice.toFixed(2)}` 
+            });
         }
 
         // Process each item in cart
         for (const item of cartItems) {
+            // Deduct from buyer's wallet
+            await db.query(
+                'UPDATE users SET wallet_balance = wallet_balance - $1 WHERE id = $2',
+                [item.price, req.session.user.id]
+            );
+
+            // Add to seller's wallet
+            await db.query(
+                'UPDATE users SET wallet_balance = wallet_balance + $1 WHERE id = $2',
+                [item.price, item.seller_id]
+            );
+
+            // Record buyer's transaction
+            await db.query(
+                'INSERT INTO wallet_transactions (user_id, amount, type, description) VALUES ($1, $2, $3, $4)',
+                [req.session.user.id, item.price, 'DEBIT', `Purchased book: ${item.book_name}`]
+            );
+
+            // Record seller's transaction
+            await db.query(
+                'INSERT INTO wallet_transactions (user_id, amount, type, description) VALUES ($1, $2, $3, $4)',
+                [item.seller_id, item.price, 'CREDIT', `Sold book: ${item.book_name}`]
+            );
+
             // Create purchase record
             await db.query(
                 'INSERT INTO purchases (buyer_id, book_id) VALUES ($1, $2)',
@@ -145,7 +175,11 @@ router.post('/cart/checkout', async (req, res) => {
         // Commit transaction
         await db.query('COMMIT');
 
-        res.json({ message: 'Checkout successful' });
+        res.json({ 
+            message: 'Checkout successful',
+            totalPaid: totalPrice,
+            newBalance: (buyerBalance - totalPrice).toFixed(2)
+        });
     } catch (error) {
         await db.query('ROLLBACK');
         console.error('Error during checkout:', error);

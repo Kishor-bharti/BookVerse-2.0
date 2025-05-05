@@ -125,7 +125,7 @@ function updateNavbar(isLoggedIn) {
     if (!navbar) return;
 
     const links = isLoggedIn
-        ? ['Home', 'About', 'Cart', 'Upload', 'Logout']
+        ? ['Home', 'About', 'Cart', 'Wallet', 'Upload', 'Logout']
         : ['Home', 'About', 'Login', 'Register'];
 
     navbar.innerHTML = links.map(link => {

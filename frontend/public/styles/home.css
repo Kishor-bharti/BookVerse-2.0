@@ -443,6 +443,74 @@ header.shadow {
     background: #d88550;
 }
 
+/* Wallet Styles */
+.wallet-container {
+    margin-top: 80px;
+    min-height: 60vh;
+}
+
+.wallet-balance {
+    background: var(--bg-color);
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: var(--box-shadow);
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.balance-amount {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: var(--main-color);
+    margin: 15px 0;
+}
+
+.transaction-history {
+    background: var(--bg-color);
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: var(--box-shadow);
+}
+
+.transaction-item {
+    padding: 15px;
+    border-bottom: 1px solid var(--second-color);
+    margin-bottom: 10px;
+}
+
+.transaction-item:last-child {
+    border-bottom: none;
+}
+
+.transaction-details {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5px;
+}
+
+.transaction-type {
+    font-weight: bold;
+}
+
+.transaction-item.credit .transaction-type {
+    color: #28a745;
+}
+
+.transaction-item.debit .transaction-type {
+    color: #dc3545;
+}
+
+.transaction-description {
+    color: var(--text-color);
+    font-size: 0.9rem;
+    margin-bottom: 5px;
+}
+
+.transaction-date {
+    color: #666;
+    font-size: 0.8rem;
+}
+
 /*! Footer */
 .footer {
     display: grid;
