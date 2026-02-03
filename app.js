@@ -54,10 +54,16 @@ app.use('/api', booksRoutes);
 app.use('/api', cartRoutes);
 app.use('/api', walletRoutes);
 
-// Serve index.html for root URL
-app.get('/', (req, res) => {
-    res.redirect('/src/pages/home.html');
+// to redirect root to home page
+app.get("/", (req, res) => {
+  res.redirect("/pages/home.html");
 });
+
+
+// Serve index.html for root URL
+// app.get('/', (req, res) => {
+//     res.redirect('/src/pages/home.html');
+// });
 
 app.listen(PORT, () => {
     console.log(`Server running at http://localhost:${PORT}`);
