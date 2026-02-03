@@ -15,7 +15,7 @@
                     <a href="/">Home</a>
                 </li>
                 <li>
-                    <a href="/pages/register.html">New Student Register</a>
+                    <a href="/register">New Student Register</a>
                 </li>
             </ul>
         </nav>
@@ -56,7 +56,7 @@
                 if (response.ok) {
                     // Login successful
                     alert('Login successful!');
-                    window.location.href = '/pages/home.html';
+                    window.location.href = '/';
                 } else {
                     // Login failed
                     alert(data.message || 'Login failed');

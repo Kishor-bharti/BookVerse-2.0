@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     alert('Book uploaded successfully!');
                     uploadForm.reset();
                     // Optionally redirect to home page or books page
-                    window.location.href = '/pages/home.html';
+                    window.location.href = '/';
                 } else {
                     const errorData = await res.json();
                     alert(errorData.error || 'Failed to upload book.');
@@ -69,11 +69,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Smooth scroll for Home link
-    const homeLink = document.querySelector('#navbar a[href="/src/pages/home.html"]');
+    const homeLink = document.querySelector('#navbar a[href="/"]');
     if (homeLink) {
         homeLink.addEventListener('click', (e) => {
-            e.preventDefault();
-            window.location.href = '/src/pages/home.html';
+            // If not on root, allow navigation; if on root, smooth scroll handled elsewhere
+            if (window.location.pathname === '/') {
+                e.preventDefault();
+                document.querySelector('#home')?.scrollIntoView({ behavior: 'smooth' });
+            }
         });
     }
 });
@@ -88,10 +91,10 @@ function setupSearchAndMenu() {
     if (cartIcon) {
         cartIcon.onclick = () => {
             if (isLoggedIn()) {
-                window.location.href = '/pages/cart.html';
+                window.location.href = '/cart';
             } else {
                 alert('Please login to access your cart');
-                window.location.href = '/pages/login.html';
+                window.location.href = '/login';
             }
         };
     }
@@ -143,11 +146,12 @@ function updateNavbar(isLoggedIn) {
 
     navbar.innerHTML = links.map(link => {
         if (link === 'Home') {
-            return `<a href="home.html">${link}</a>`;
+            return `<a href="/">${link}</a>`;
         } else if (link === 'Logout') {
             return `<a href="#" id="logout-link">${link}</a>`;
         }
-        return `<a href="${link.toLowerCase()}.html">${link}</a>`;
+        const path = `/${link.toLowerCase()}`;
+        return `<a href="${path}">${link}</a>`;
     }).join('');
 
     // Add event listener for the logout link
@@ -160,7 +164,7 @@ function updateNavbar(isLoggedIn) {
                 if (response.ok) {
                     alert('Logout successful!');
                     updateNavbar(false); // Update navbar to logged-out state
-                    window.location.href = 'home.html'; // Redirect to home page
+                    window.location.href = '/'; // Redirect to home page
                 } else {
                     alert('Failed to log out. Please try again.');
                 }
@@ -172,11 +176,13 @@ function updateNavbar(isLoggedIn) {
     }
 
     // Add smooth scroll for the home link
-    const homeLink = document.getElementById('home-link');
-    if (homeLink) {
-        homeLink.addEventListener('click', (e) => {
-            e.preventDefault();
-            document.querySelector('#home').scrollIntoView({ behavior: 'smooth' });
+    const homeLinkOnPage = document.querySelector('#navbar a[href="/"]');
+    if (homeLinkOnPage && document.querySelector('#home')) {
+        homeLinkOnPage.addEventListener('click', (e) => {
+            if (window.location.pathname === '/') {
+                e.preventDefault();
+                document.querySelector('#home').scrollIntoView({ behavior: 'smooth' });
+            }
         });
     }
 }
@@ -284,8 +290,8 @@ function updateNavbarForLoggedOutUser() {
     const navbar = document.querySelector('.navbar ul');
     navbar.innerHTML = `
         <li><a href="/">Home</a></li>
-        <li><a href="/pages/login.html">Login</a></li>
-        <li><a href="/pages/register.html">Register</a></li>
+        <li><a href="/login">Login</a></li>
+        <li><a href="/register">Register</a></li>
     `;
 }
 
@@ -371,7 +377,7 @@ async function addToCart(bookId) {
     try {
         if (!isLoggedIn()) {
             alert('Please login to add items to cart');
-            window.location.href = '/pages/login.html';
+            window.location.href = '/login';
             return;
         }
 

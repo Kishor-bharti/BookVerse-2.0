@@ -38,8 +38,8 @@ app.use((req, res, next) => {
 // Middleware to prevent logged-in users from accessing login and registration pages
 app.use((req, res, next) => {
     console.log('Session User:', req.session.user); // Debugging
-    if ((req.path === '/src/pages/login.html' || req.path === '/src/pages/register.html') && req.session.user) {
-        return res.redirect('/src/pages/home.html');
+    if ((req.path === '/login' || req.path === '/register') && req.session.user) {
+        return res.redirect('/');
     }
     next();
 });
@@ -54,16 +54,27 @@ app.use('/api', booksRoutes);
 app.use('/api', cartRoutes);
 app.use('/api', walletRoutes);
 
-// to redirect root to home page
-// app.get("/", (req, res) => {
-//   res.redirect("/pages/home.html");
-// });
+// Serve pages with clean routes
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'frontend', 'public', 'index.html'));
+});
 
+// Optional: /home redirects to root
+app.get('/home', (req, res) => {
+    res.redirect('/');
+});
 
-// Serve index.html for root URL
-// app.get('/', (req, res) => {
-//     res.redirect('/src/pages/home.html');
-// });
+app.get('/about', (req, res) => {
+    res.sendFile(path.join(__dirname, 'frontend', 'src', 'pages', 'about.html'));
+});
+
+app.get('/login', (req, res) => {
+    res.sendFile(path.join(__dirname, 'frontend', 'src', 'pages', 'login.html'));
+});
+
+app.get('/register', (req, res) => {
+    res.sendFile(path.join(__dirname, 'frontend', 'src', 'pages', 'register.html'));
+});
 
 app.listen(PORT, () => {
     console.log(`Server running at http://localhost:${PORT}`);

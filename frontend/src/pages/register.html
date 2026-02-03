@@ -14,7 +14,7 @@
                 <a href="/">Home</a>
             </li>
             <li>
-                <a href="/pages/login.html">Login</a>
+                <a href="/login">Login</a>
             </li>
         </ul>
     </nav>
@@ -90,7 +90,7 @@
                     updateNavbarForLoggedInUser();
 
                     // Redirect to home page after successful registration
-                    window.location.href = '/pages/home.html';
+                    window.location.href = '/';
                 } else {
                     // Registration failed
                     alert(data.message || 'Registration failed');
