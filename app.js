@@ -55,9 +55,9 @@ app.use('/api', cartRoutes);
 app.use('/api', walletRoutes);
 
 // to redirect root to home page
-app.get("/", (req, res) => {
-  res.redirect("/pages/home.html");
-});
+// app.get("/", (req, res) => {
+//   res.redirect("/pages/home.html");
+// });
 
 
 // Serve index.html for root URL
